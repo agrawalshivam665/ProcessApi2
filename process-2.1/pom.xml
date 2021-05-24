@@ -39,7 +39,7 @@
 						<muleVersion>4.3.0</muleVersion>
 						<workers>1</workers>
 						<workerType>Micro</workerType>
-						<applicationName>Order-project-Shivam</applicationName>
+						<applicationName>Process-project-Shivam</applicationName>
 						<objectStoreV2>true</objectStoreV2>
 					</cloudHubDeployment>
 					<sharedLibraries>
