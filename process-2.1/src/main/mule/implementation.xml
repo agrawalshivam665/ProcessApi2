@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:order-api="http://www.mulesoft.org/schema/mule/order-api" xmlns:complainapi="http://www.mulesoft.org/schema/mule/complainapi" xmlns:customer-api="http://www.mulesoft.org/schema/mule/customer-api" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/customer-api http://www.mulesoft.org/schema/mule/customer-api/current/mule-customer-api.xsd
+http://www.mulesoft.org/schema/mule/complainapi http://www.mulesoft.org/schema/mule/complainapi/current/mule-complainapi.xsd
+http://www.mulesoft.org/schema/mule/order-api http://www.mulesoft.org/schema/mule/order-api/current/mule-order-api.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+	<customer-api:config name="Customer_API_Config" doc:name="Customer API Config" doc:id="188f429f-cb6d-4a74-ae74-c8624d2c7531" property_host="customersapi-project-shrutihp.us-e2.cloudhub.io" property_port="80" property_protocol="HTTP" property_basePath="/api" />
+	<order-api:config name="Order_API_Config" doc:name="Order API Config" doc:id="06289ab8-57ff-4000-8267-28d6fd52fabe" property_host="order-project-shivam.us-e2.cloudhub.io" property_port="80" property_protocol="HTTP" property_basePath="/api" />
+	<complainapi:config name="Complainapi_Config" doc:name="Complainapi Config" doc:id="609a16d0-2cd7-4d0b-a4d6-637fb6baf4da" property_host="complain-project-shivam.us-e2.cloudhub.io" property_port="80" property_protocol="HTTP" property_basePath="/api" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="867c3a0a-5cf0-40ec-a98c-09552f7e152d" >
+		<db:my-sql-connection host="34.69.36.42" port="3306" user="root" password="SHIvam665@@" database="Complain" />
+	</db:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="0db3cf59-b81e-4f5d-b963-aba624748cf7" file="mule.dev.properties" />
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="7152f05e-89b7-46da-8443-8fce56767a66" >
+		<email:smtps-connection host="${smtp.host}" port="${smtp.port}" user="${smtp.user}" password="${smtp.password}" tlsContext="TLS_Context" />
+	</email:smtp-config>
+	<tls:context name="TLS_Context" doc:name="TLS Context" doc:id="99322ada-a975-4082-87ae-35ce2b49160e" >
+		<tls:trust-store insecure="true" />
+	</tls:context>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="d0c08c9c-5096-4fe2-b01a-4c98214a4634" basePath="/api" >
+		<http:request-connection host="complain-project-shivam.us-e2.cloudhub.io" port="80" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="666c4a2b-2e3e-4641-9548-f39cde06fecf" basePath="/api" >
+		<http:request-connection host="complain-project-shivam.us-e2.cloudhub.io" port="80" />
+	</http:request-config>
+	<flow name="GetallComplainFlow" doc:id="e17e0a08-74a9-45d5-a9f6-0d03e8353add" >
+		<set-variable value="#[attributes.queryParams.'customerNumber']" doc:name="customerNumber" doc:id="fc3afbf2-bd68-41e0-a234-a2443501a605" variableName="customerNumber"/>
+		<set-variable value="#[attributes.queryParams.'orderNumber']" doc:name="orderNumber" doc:id="6fa684b7-ef5a-41c1-8c7d-6b8f6aab2291" variableName="orderNumber"/>
+		<set-variable value="#[attributes.queryParams.'orderDate']" doc:name="orderDate" doc:id="c91ba669-bd06-42c8-998a-4eaa95263a08" variableName="orderDate"/>
+		<set-variable value="#[attributes.headers.'Transaction-Id']" doc:name="header" doc:id="73313613-894d-40e4-9c0f-9d5438c66241" variableName="header"/>
+		<http:request method="GET" doc:name="Request" doc:id="50b14456-052b-4081-9dc5-45f9c971759b" config-ref="HTTP_Request_configuration" path="/complaints">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Transaction-Id" : vars.header
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"customerNumber" : vars.customerNumber,
+	"orderDate" : vars.orderDate,
+	"orderNumber" : vars.orderNumber
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="7adf4674-9bcb-41d8-a1c6-6f1723acd601" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="PatchComplainFlow" doc:id="600764fe-5d75-435c-b68f-c8b60079c72f" >
+		<set-variable value="#[attributes.uriParams.'complaintID']" doc:name="complainNumber" doc:id="30b2850e-dbde-4da0-98a9-371e0c9e7e16" variableName="complainNumber"/>
+		<complainapi:partial-update doc:name="Partial Update" doc:id="fa53f358-a6b3-4c5d-af5e-41526083215c" config-ref="Complainapi_Config" complaint-id="#[vars.complainNumber]"/>
+		<choice doc:name="Choice" doc:id="cb974ba3-69fa-4f81-80c3-625d59862111">
+			<when expression='#[payload.message=="You either entered wrong complaint Number or improper status "]'>
+				<ee:transform doc:name="Transform Message" doc:id="22379b09-12ca-4af6-803b-8408716c6d02">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "You either entered wrong complaint Number or improper status "
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<db:query-single doc:name="Query single" doc:id="7c677238-bdda-44ce-a817-90142b8f658f" config-ref="Database_Config">
+			<db:sql><![CDATA[Select customerMail from complaint where complainNumber=:num]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	'num': vars.complainNumber
+}]]]></db:input-parameters>
+		</db:query-single>
+				<set-variable value="#[payload.customerMail]" doc:name="email" doc:id="60b753f0-de34-410a-bd70-316bda6229a6" variableName="email" />
+				<db:query-single doc:name="Query single" doc:id="fd32745f-f672-43d3-87e1-56c0d6f175c1" config-ref="Database_Config">
+			<db:sql><![CDATA[select C.customerNumber,O.orderNumber,O.orderDate,P.productCode,P.productName,P.buyPrice from complaint C join Orders O On O.orderNumber=C.orderNumber join OrderDetails D On D.orderNumber=O.OrderNumber join Products P on P.productCode=D.productCode 
+where C.complainNumber=:numb;]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	'numb': vars.complainNumber
+}]]]></db:input-parameters>
+		</db:query-single>
+				<ee:transform doc:name="Transform Message" doc:id="b40f3d80-6e99-42b3-83b4-006ec7aa1e3c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+Complain:{
+ 	CustomerNumber: payload.customerNumber,
+ 	OrderDetails:{
+ 		OrderID: payload.orderNumber,
+ 		OrderDate: payload.orderDate
+ 		
+ 	},
+ 	ProductDetails:{
+ 		ProductId: payload.productCode,
+ 		ProductName: payload.productName,
+ 		ProductCost: payload.buyPrice
+ 	}
+ }
+	]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<email:send doc:name="Send" doc:id="b04f5442-cfaa-4e48-beef-65b38d0a2b6a" config-ref="Email_SMTP" fromAddress="${smtp.user}" subject='#["Complain Resolved"]'>
+			<email:to-addresses>
+				<email:to-address value="#[vars.email]" />
+			</email:to-addresses>
+			<email:body contentType="text/plain">
+				<email:content><![CDATA[#["You can find your Complaint invoice in Attachments" ++ "\n" ++ "Regards" ++ "\n" ++ "XYZ"]]]></email:content>
+			</email:body>
+			<email:attachments><![CDATA[#[{
+"Attacments.txt": payload
+
+}]]]></email:attachments>
+		</email:send>
+				<ee:transform doc:name="Transform Message" doc:id="92e3bdfb-ecfa-4672-92a5-369505eb579f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Resolved Mail is sent "
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="GetcomplainByIdFlow" doc:id="b55544cf-e7f4-41ed-97a8-262ed9937693" >
+		<complainapi:customer-complain_2 doc:name="Customer Complain" doc:id="4f96c87b-135f-4c64-b27f-4fc82b050124" config-ref="Complainapi_Config" transaction-id="#[attributes.headers.'Transaction-Id']" complaint-id="#[vars.complainID]"/>
+		<ee:transform doc:name="Transform Message" doc:id="530f7a39-381f-496c-bfa1-b777949b9ce9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+Complain:{
+ 	CustomerNumber: payload.customerNumber,
+ 	OrderDetails:{
+ 		OrderID: payload.orderNumber,
+ 		OrderDate: payload.orderDate
+ 		
+ 	},
+ 	ProductDetails:{
+ 		ProductId: payload.productCode,
+ 		ProductName: payload.productName,
+ 		ProductCost: payload.buyPrice
+ 	}
+ }]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="GetAllCustomerFlow" doc:id="c89d034c-63d6-43df-a36e-cf9d02db11be" >
+		<customer-api:get-all-customer-details doc:name="Get All Customer details" doc:id="831337b2-1408-4ed9-acd1-29a963dbe3d0" config-ref="Customer_API_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="8ad7aae5-bd15-4a77-888b-67a58fc66f4d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="PostComplainFlow" doc:id="406845e7-92a9-4b04-888f-d03647f73689" >
+		<complainapi:post-complain doc:name="post Complain" doc:id="27e966ad-722e-463f-ac3b-ac0424b9dc7b" config-ref="Complainapi_Config"/>
+		<db:query-single doc:name="Query single" doc:id="1640f863-13c9-4410-b138-2022e0ac6249" config-ref="Database_Config">
+			<db:sql ><![CDATA[select max(complainNumber) from complaint;]]></db:sql>
+		</db:query-single>
+		<set-variable value='#[payload."max(complainNumber)"]' doc:name="complainNumber" doc:id="1fb0cd4b-2c79-451b-9460-871d973035d2" variableName="complainNumber"/>
+		<db:query-single doc:name="Query single" doc:id="a9acb80a-fa7e-457f-b357-53c8dfac613f" config-ref="Database_Config">
+			<db:sql ><![CDATA[Select customerMail from complaint where complainNumber= :num;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'num': vars.complainNumber
+}]]]></db:input-parameters>
+		</db:query-single>
+		<set-variable value="#[payload.customerMail]" doc:name="email" doc:id="5297721c-1b19-4eef-8b4a-599be3b0e830" variableName="email" />
+		<db:query-single doc:name="Query single" doc:id="28a6dc27-4184-41ba-b5f2-6af55866ea69" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from complaint where complainNumber=:number; ]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	'number': vars.complainNumber
+}]]]></db:input-parameters>
+		</db:query-single>
+		<ee:transform doc:name="Transform Message" doc:id="66678b20-7876-4444-bf7f-fa37307e0d1f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	
+	
+	complainNumber: payload.complainNumber,
+	ComplainDesc: payload.complainDesc,
+	ComplainDate: payload.complainDate,
+	productCode: payload.productCode,
+	customerNumber: payload.customerNumber,
+	orderNumber: payload.orderNumber
+	
+	
+	}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<email:send doc:name="Send" doc:id="24cdac92-9eef-466f-85eb-2a12d6db78ad" config-ref="Email_SMTP" fromAddress="${smtp.user}" subject='#["Your Complaint is Register Successfully"]'>
+			<email:to-addresses>
+				<email:to-address value="#[vars.email]" />
+			</email:to-addresses>
+			<email:body contentType="text/plain">
+				<email:content><![CDATA[#["Here you can find your Complain Details in Attachment" ++ "\n" ++ "Regards" ++ "\n" ++ "XYZ"]]]></email:content>
+			</email:body>
+			<email:attachments><![CDATA[#[{
+	"Attachments.txt": payload
+}]]]></email:attachments>
+		</email:send>
+		<ee:transform doc:name="Transform Message" doc:id="6be6fe5b-c492-4b13-9231-9396d9c1192a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Complain is sent to Mail"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="PostCustomerFlow" doc:id="440b09b6-1423-43b8-b032-0d966d25548e" >
+		<customer-api:post-product doc:name="Post Product" doc:id="d976432f-eb9e-46da-82be-ac8f346c9a9a" config-ref="Customer_API_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="a2ff60e2-2a44-43a8-9572-d574d3d0eba2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "New Customer is Added"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="DeleteOrderFlow" doc:id="9c45cc32-8296-4f3c-aac1-7585274206f3" >
+		<order-api:delete-order-by-id doc:name="Delete Order by ID" doc:id="212794d7-2d5b-474d-8b25-1a69a2373af6" config-ref="Order_API_Config" order-number="#[vars.orderNumber]" />
+		<ee:transform doc:name="Transform Message" doc:id="80c98a3b-e169-457a-9a26-ecea0a72e5e9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Order has been deleted"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="PostorderFlow" doc:id="82c43fe8-13b3-47c3-ba0a-70d2bd5ce715" >
+		<order-api:post-product doc:name="Post Product" doc:id="fc8ba7da-b675-4510-8f16-3e3b3ec8ecd8" config-ref="Order_API_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="c3af9a4f-eecf-4cde-bcfe-b40b49263701" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	meaasge: "New Order is Added"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="GetallOrderFlow" doc:id="e63327b7-c706-45b1-a217-4e7bdc7dffb1" >
+		<order-api:get-all-orders doc:name="Get All Orders" doc:id="cc0a874d-a644-4fc7-a200-c73f9486a6a1" config-ref="Order_API_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="95a52491-322a-4d7f-a267-1541f0b56a87" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="GetorderByIdFlow" doc:id="95eaad3f-e9d9-40f9-a3b8-97328428a59f" >
+		<order-api:get-order-details-for-a-particular-id doc:name="Get Order details for a particular ID" doc:id="35ff853f-4373-42ce-b4d0-a72b2832d20e" config-ref="Order_API_Config" order-number="#[vars.orderNumber]"/>
+		<ee:transform doc:name="Transform Message" doc:id="cc3abcff-8ada-48ee-8ad4-946089b7d647" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="GetcustomerByIdFlow" doc:id="ef424c96-2a28-4ac4-a62a-65f2c9b9d940" >
+		<customer-api:get-product-details-for-a-particular-id doc:name="Get Product details for a particular ID" doc:id="ba55a67e-0e36-4973-8577-435862bd3272" config-ref="Customer_API_Config" customer-number="#[vars.customerNumber]"/>
+		<ee:transform doc:name="Transform Message" doc:id="b9172c0f-4abc-4f40-952b-06b36badd0eb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

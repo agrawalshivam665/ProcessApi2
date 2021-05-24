@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.munit/munit-tools/2.3.4"/>
+	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.munit/munit-runner/2.3.4"/>
+	<classpathentry kind="con" path="MULE_LIB/aa612fec-cc13-4706-8dd6-adfe2bff9709/mule-plugin-complainapi/8.0.8"/>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-sockets-connector/1.1.5"/>
+	<classpathentry kind="con" path="MULE_LIB/c01dfb79-d9da-4a1d-bf51-e3edf4c432e6/mule-plugin-order-api/1.0.2"/>
+	<classpathentry kind="con" path="org.mule.tooling.API_SPEC_LIB/aa612fec-cc13-4706-8dd6-adfe2bff9709/processapi2/1.0.3"/>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-email-connector/1.4.1"/>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-db-connector/1.9.3"/>
+	<classpathentry kind="con" path="org.mule.tooling.MULE_PROJECT_LIB"/>
+	<classpathentry kind="con" path="MULE_LIB/c01dfb79-d9da-4a1d-bf51-e3edf4c432e6/mule-plugin-customer-api/1.0.2"/>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-http-connector/1.5.23"/>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-apikit-module/1.5.1"/>
+	<classpathentry exported="true" kind="con" path="MULE_RUNTIME/org.mule.tooling.server.4.3.0.ee"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src/main/mule"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry kind="src" path="src/test/munit"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

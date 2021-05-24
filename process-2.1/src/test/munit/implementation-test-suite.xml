@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-test-suite.xml" />
+	<munit:test name="implementation-test-suite-GetAllCustomerFlowTest" doc:id="fc6e5a67-600c-4995-85bc-ff8e96cb1be0" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to GetAllCustomerFlow" doc:id="cd4ec682-38b6-48a4-934e-a3ee5892c770" name="GetAllCustomerFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="6866859c-f03a-4dd6-8318-da640923e781" is="#[MunitTools::notNullValue()]" message='#["Error in getAllcustomer Flow"]' expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-GetallOrderFlowTest" doc:id="a931b04d-abd4-490e-b6d7-24b612730c45" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to GetallOrderFlow" doc:id="d3c00632-68de-466f-9b4b-7729cefd2d7e" name="GetallOrderFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="18cf9980-2279-4099-8244-54a9782b38a1" expression="#[payload]" is="#[MunitTools::notNullValue()]" message='#["Error in getAllOrders flow"]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-GetorderByIdFlowTest" doc:id="6c190061-39a5-4596-9b66-4277dc20a6a8" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="3638c05b-e7dc-49f8-96fd-c779594b7093" processor="order-api:get-order-details-for-a-particular-id">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get Order details for a particular ID" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="35ff853f-4373-42ce-b4d0-a72b2832d20e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Order_API_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="#[vars.orderNumber]" attributeName="order-number" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to GetorderByIdFlow" doc:id="f304e69e-26db-4e4c-80a1-577d6def3d6d" name="GetorderByIdFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="44c382d2-0e2e-4211-a27e-7fad85204b51" message='#["Error in getorderby Id"]' expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-GetcustomerByIdFlowTest" doc:id="dd96e2c1-081b-4adb-9488-1207181fe512" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1e1a67c4-e57e-44dc-bbb5-8f8f30827126" processor="customer-api:get-product-details-for-a-particular-id">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get Product details for a particular ID" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="ba55a67e-0e36-4973-8577-435862bd3272" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Customer_API_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="#[vars.customerNumber]" attributeName="customer-number" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to GetcustomerByIdFlow" doc:id="21130fef-724e-4543-9833-f39d572c83a2" name="GetcustomerByIdFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="2c0c17ba-7653-4161-9324-0d507455bd78" expression="#[payload]" is="#[MunitTools::notNullValue()]" message='#["Error in getcustomerById  flow"]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-DeleteOrderFlowTest" doc:id="5fe72cd8-9a08-4b3b-97a9-86d50a3778d1" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="466b65ed-387b-4885-8705-706734d6fc98" processor="order-api:delete-order-by-id">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Delete Order by ID" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="212794d7-2d5b-474d-8b25-1a69a2373af6" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Order_API_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="#[vars.orderNumber]" attributeName="order-number" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to DeleteOrderFlow" doc:id="0f2d53a2-36e4-4452-82aa-6dd82c45c270" name="DeleteOrderFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="f3deed82-fa16-4c40-8074-dfcfcf9f2552" actual="#[payload.message]" expected='#["Order has been deleted"]' message='#["Error in delete order flow"]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-PostCustomerFlowTest" doc:id="b5b94def-caa2-4399-862f-fd476c9b7b50" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="fb3cde47-270b-428d-ad28-e88610a6b0c9" processor="customer-api:post-product">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Post Product" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="d976432f-eb9e-46da-82be-ac8f346c9a9a" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Customer_API_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="664be3a5-ad22-41fc-aae2-1bfd0188dbc3" />
+			<flow-ref doc:name="Flow-ref to PostCustomerFlow" doc:id="3882ab68-a597-45de-b20d-91e91dc7d9a8" name="PostCustomerFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="76b82914-d3d1-492f-9be1-ea91ea788bc3" message='#["Error in post Customer flow"]' expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-GetcomplainByIdFlowTest" doc:id="44af3114-c577-4eaa-9852-15f8f6393ea7" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c48b0d25-0874-4335-aa3e-813526183529" processor="complainapi:customer-complain_2">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Customer Complain" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="4f96c87b-135f-4c64-b27f-4fc82b050124" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Complainapi_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="#[attributes.headers.'Transaction-Id']" attributeName="transaction-id" />
+					<munit-tools:with-attribute whereValue="#[vars.complainID]" attributeName="complaint-id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="bcb6bf9e-c723-4da1-924c-4c2d50cd8709" />
+			<flow-ref doc:name="Flow-ref to GetcomplainByIdFlow" doc:id="47cd1db4-6dbd-406d-b40f-c99cc2d907a9" name="GetcomplainByIdFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="0a69f46e-2368-4efe-aad3-c8daeb8d1e9d" is="#[MunitTools::notNullValue()]" message="Error in complain by id Flow" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-PostorderFlowTest" doc:id="dc84181b-7cd1-4653-941f-6d55cb062234" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="dba0bea2-99ce-4ba7-8483-61f233c4fb16" processor="order-api:post-product">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Post Product" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="fc8ba7da-b675-4510-8f16-3e3b3ec8ecd8" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Order_API_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to PostorderFlow" doc:id="db539a23-8acc-4e65-9648-5abdb21e00c4" name="PostorderFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="3256dac8-a050-4558-b637-0cd3a8dfc488" is="#[MunitTools::notNullValue()]" message='#["Error in postorder flow"]' expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-GetallComplainFlowTest" doc:id="50c1e726-8ec2-46f8-b626-b735f4404bd8" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="29f46a60-1c0a-4904-a2a0-504ecf1fd2a5" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GET" attributeName="method" />
+					<munit-tools:with-attribute whereValue="Request" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="50b14456-052b-4081-9dc5-45f9c971759b" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/complaints" attributeName="path" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to GetallComplainFlow" doc:id="b3e16ce0-749b-4fbf-938f-0e7818cbe7a5" name="GetallComplainFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="de4bd7d3-3715-450d-b05a-be93b39c7d8b" message='#["Error in get All complain Flow"]' expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-PostComplainFlowTest" doc:id="ad359aad-399f-48d8-8abf-ce99a2b13cd3" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c8cbe55b-e4fd-41c0-bbea-c7796729e285" processor="complainapi:post-complain">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="post Complain" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="27e966ad-722e-463f-ac3b-ac0424b9dc7b" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Complainapi_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to PostComplainFlow" doc:id="59058b3e-8853-4495-9291-44be437f881c" name="PostComplainFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="e944d4c5-658b-4070-9ef3-2ab94466be0a" is="#[MunitTools::notNullValue()]" message='#["Error in Post Complain Flow"]' expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
