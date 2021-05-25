@@ -119,25 +119,13 @@ output application/json
 		</choice>
 	</flow>
 	<flow name="GetcomplainByIdFlow" doc:id="b55544cf-e7f4-41ed-97a8-262ed9937693" >
-		<complainapi:customer-complain_2 doc:name="Customer Complain" doc:id="4f96c87b-135f-4c64-b27f-4fc82b050124" config-ref="Complainapi_Config" transaction-id="#[attributes.headers.'Transaction-Id']" complaint-id="#[vars.complainID]"/>
+		<complainapi:customer-complain_2 doc:name="Customer Complain" doc:id="4f96c87b-135f-4c64-b27f-4fc82b050124" config-ref="Complainapi_Config" transaction-id="#[attributes.headers.'Transaction-Id']" complaint-id="#[attributes.uriParams.'complaintID']"/>
 		<ee:transform doc:name="Transform Message" doc:id="530f7a39-381f-496c-bfa1-b777949b9ce9" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-Complain:{
- 	CustomerNumber: payload.customerNumber,
- 	OrderDetails:{
- 		OrderID: payload.orderNumber,
- 		OrderDate: payload.orderDate
- 		
- 	},
- 	ProductDetails:{
- 		ProductId: payload.productCode,
- 		ProductName: payload.productName,
- 		ProductCost: payload.buyPrice
- 	}
- }]]></ee:set-payload>
+payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
@@ -226,7 +214,7 @@ output application/json
 		</ee:transform>
 	</flow>
 	<flow name="DeleteOrderFlow" doc:id="9c45cc32-8296-4f3c-aac1-7585274206f3" >
-		<order-api:delete-order-by-id doc:name="Delete Order by ID" doc:id="212794d7-2d5b-474d-8b25-1a69a2373af6" config-ref="Order_API_Config" order-number="#[vars.orderNumber]" />
+		<order-api:delete-order-by-id doc:name="Delete Order by ID" doc:id="212794d7-2d5b-474d-8b25-1a69a2373af6" config-ref="Order_API_Config" order-number="#[attributes.uriParams.'orderNumber']" />
 		<ee:transform doc:name="Transform Message" doc:id="80c98a3b-e169-457a-9a26-ecea0a72e5e9" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -263,7 +251,7 @@ payload]]></ee:set-payload>
 		</ee:transform>
 	</flow>
 	<flow name="GetorderByIdFlow" doc:id="95eaad3f-e9d9-40f9-a3b8-97328428a59f" >
-		<order-api:get-order-details-for-a-particular-id doc:name="Get Order details for a particular ID" doc:id="35ff853f-4373-42ce-b4d0-a72b2832d20e" config-ref="Order_API_Config" order-number="#[vars.orderNumber]"/>
+		<order-api:get-order-details-for-a-particular-id doc:name="Get Order details for a particular ID" doc:id="35ff853f-4373-42ce-b4d0-a72b2832d20e" config-ref="Order_API_Config" order-number="#[attributes.uriParams.'orderNumber']"/>
 		<ee:transform doc:name="Transform Message" doc:id="cc3abcff-8ada-48ee-8ad4-946089b7d647" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -274,7 +262,7 @@ payload]]></ee:set-payload>
 		</ee:transform>
 	</flow>
 	<flow name="GetcustomerByIdFlow" doc:id="ef424c96-2a28-4ac4-a62a-65f2c9b9d940" >
-		<customer-api:get-product-details-for-a-particular-id doc:name="Get Product details for a particular ID" doc:id="ba55a67e-0e36-4973-8577-435862bd3272" config-ref="Customer_API_Config" customer-number="#[vars.customerNumber]"/>
+		<customer-api:get-product-details-for-a-particular-id doc:name="Get Product details for a particular ID" doc:id="ba55a67e-0e36-4973-8577-435862bd3272" config-ref="Customer_API_Config" customer-number="#[attributes.uriParams.'customerNumber']"/>
 		<ee:transform doc:name="Transform Message" doc:id="b9172c0f-4abc-4f40-952b-06b36badd0eb" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
