@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<configuration doc:name="Configuration" doc:id="44f24faa-f40d-4af1-8df6-2d4625f45f7d" defaultErrorHandler-ref="globalError_Handler" />
+	<error-handler name="globalError_Handler" doc:id="033d7b1d-1a99-4212-9d2e-4f7adc289eb3" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="31df2e34-c135-4f6b-b46e-84a2f02db117" type="ANY">
+			<set-payload value='#["Error"]' doc:name="Set Payload" doc:id="c50db06c-0b7e-4cae-b7ea-5b53debb3eff" />
+			<set-variable value="500" doc:name="httpStatus" doc:id="fc09274e-cbff-4081-aa5a-e95c0f0ea43c" variableName="httpStatus"/>
+		</on-error-continue>
+	</error-handler>
+</mule>

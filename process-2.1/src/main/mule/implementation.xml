@@ -60,6 +60,7 @@ payload]]></ee:set-payload>
 	</flow>
 	<flow name="PatchComplainFlow" doc:id="600764fe-5d75-435c-b68f-c8b60079c72f" >
 		<set-variable value="#[attributes.uriParams.'complaintID']" doc:name="complainNumber" doc:id="30b2850e-dbde-4da0-98a9-371e0c9e7e16" variableName="complainNumber"/>
+		<set-variable value="#[attributes.headers.'Transaction-Id']" doc:name="header" doc:id="0e9d3c98-c51c-4904-bc4d-70f9e2f58803" variableName="header"/>
 		<complainapi:partial-update doc:name="Partial Update" doc:id="fa53f358-a6b3-4c5d-af5e-41526083215c" config-ref="Complainapi_Config" complaint-id="#[vars.complainNumber]"/>
 		<choice doc:name="Choice" doc:id="cb974ba3-69fa-4f81-80c3-625d59862111">
 			<when expression='#[payload.message=="You either entered wrong complaint Number or improper status "]'>
@@ -82,31 +83,13 @@ output application/json
 }]]]></db:input-parameters>
 		</db:query-single>
 				<set-variable value="#[payload.customerMail]" doc:name="email" doc:id="60b753f0-de34-410a-bd70-316bda6229a6" variableName="email" />
-				<db:query-single doc:name="Query single" doc:id="fd32745f-f672-43d3-87e1-56c0d6f175c1" config-ref="Database_Config">
-			<db:sql><![CDATA[select C.customerNumber,O.orderNumber,O.orderDate,P.productCode,P.productName,P.buyPrice from complaint C join Orders O On O.orderNumber=C.orderNumber join OrderDetails D On D.orderNumber=O.OrderNumber join Products P on P.productCode=D.productCode 
-where C.complainNumber=:numb;]]></db:sql>
-			<db:input-parameters><![CDATA[#[{
-	'numb': vars.complainNumber
-}]]]></db:input-parameters>
-		</db:query-single>
+				<complainapi:customer-complain_2 doc:name="Customer Complain" doc:id="1a598658-d36a-470a-a27a-0bca76574cac" config-ref="Complainapi_Config" complaint-id="#[vars.complainNumber]" transaction-id="#[vars.header]"/>
 				<ee:transform doc:name="Transform Message" doc:id="b40f3d80-6e99-42b3-83b4-006ec7aa1e3c">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-Complain:{
- 	CustomerNumber: payload.customerNumber,
- 	OrderDetails:{
- 		OrderID: payload.orderNumber,
- 		OrderDate: payload.orderDate
- 		
- 	},
- 	ProductDetails:{
- 		ProductId: payload.productCode,
- 		ProductName: payload.productName,
- 		ProductCost: payload.buyPrice
- 	}
- }
+payload
 	]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
