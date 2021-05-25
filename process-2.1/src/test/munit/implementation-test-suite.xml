@@ -109,7 +109,6 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<munit:set-null-payload doc:name="Set null payload" doc:id="bcb6bf9e-c723-4da1-924c-4c2d50cd8709" />
 			<flow-ref doc:name="Flow-ref to GetcomplainByIdFlow" doc:id="47cd1db4-6dbd-406d-b40f-c99cc2d907a9" name="GetcomplainByIdFlow"/>
 		</munit:execution>
 		<munit:validation >
